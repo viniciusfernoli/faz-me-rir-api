@@ -4,7 +4,7 @@ import pandas as pd
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["https://faz-me-rir.vercel.app/","https://faz-me-rir.vercel.app", "vercel.app/","http://localhost:3000"])
+CORS(app, origins=["https://faz-me-rir.vercel.app/","https://faz-me-rir.vercel.app:3000", "vercel.app","http://localhost:3000"])
 
 @app.route('/ativo', methods=['GET'])
 def obter_informacoes_ativo():
@@ -35,6 +35,10 @@ def obter_informacoes_ativo():
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
+    
+@app.route('/on', methods=['GET'])
+def ativo():
+    return {"status": "ativo"}
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
