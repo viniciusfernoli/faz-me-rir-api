@@ -4,7 +4,7 @@ import pandas as pd
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["*"]}})
 
 @app.route('/ativo', methods=['GET'])
 def obter_informacoes_ativo():
@@ -32,7 +32,6 @@ def obter_informacoes_ativo():
         
         # Serialização dos dados para JSON
         result = df_filtered.to_dict(orient='records')
-
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
