@@ -4,7 +4,7 @@ import pandas as pd
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["*"]}})
+CORS(app, origins=["https://faz-me-rir.vercel.app/","https://faz-me-rir.vercel.app", "vercel.app/","http://localhost:3000"])
 
 @app.route('/ativo', methods=['GET'])
 def obter_informacoes_ativo():
