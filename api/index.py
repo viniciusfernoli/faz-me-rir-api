@@ -35,10 +35,6 @@ def obter_informacoes_ativo():
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
-    
-@app.route('/on', methods=['GET'])
-def ativo():
-    return {"status": "ativo"}
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
