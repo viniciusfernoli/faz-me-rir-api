@@ -3,18 +3,32 @@ import pandas as pd
 from flask_cors import CORS
 from .fundamentuApi import get_data
 from datetime import datetime
+
 app = Flask(__name__)
 CORS(app)
 
-# First update
-lista, dia = dict(get_data()), datetime.strftime(datetime.today(), '%d')
-lista = {outer_k: {inner_k: float(inner_v) for inner_k, inner_v in outer_v.items()} for outer_k, outer_v in lista.items()}
+# Inicializar lista e dia como None
+lista = None
+dia = None
+
+def carregar_dados():
+    """Carrega os dados e retorna a lista e o dia atual."""
+    lista = dict(get_data())
+    lista = {outer_k: {inner_k: float(inner_v) for inner_k, inner_v in outer_v.items()} for outer_k, outer_v in lista.items()}
+    dia = datetime.strftime(datetime.today(), '%d')
+    return lista, dia
 
 @app.route('/ativo', methods=['GET'])
 def obter_informacoes_ativo():
     global lista, dia
+
+    # Verifica se os dados precisam ser carregados
+    if lista is None or dia != datetime.strftime(datetime.today(), '%d'):
+        lista, dia = carregar_dados()
+
     # Converter os dados para um DataFrame
     df = pd.DataFrame.from_dict(lista, orient='index')        
+    
     # Aplicação dos filtros
     pl = (df['P/L'] >= 3) & (df['P/L'] <= 10)
     pvp = (df['P/VP'] >= 0.5) & (df['P/VP'] <= 2)
@@ -22,6 +36,7 @@ def obter_informacoes_ativo():
     roe = (df['ROE'] * 100 >= 15) & (df['ROE'] * 100 <= 30)
     liq2mounth = df['Liq.2meses'] >= 1000000
     cresc5years = (df['Cresc.5anos'] * 100) >= 10
+    
     # Filtros combinados
     filters = (
         pl & pvp & divYield & roe & liq2mounth & cresc5years
@@ -59,11 +74,6 @@ def obter_informacoes_ativo():
     df_filtered = df_filtered.reset_index()
     result = df_filtered.to_dict(orient='records')
 
-    if dia == datetime.strftime(datetime.today(), '%d'):
-        return jsonify(result)
-    else:
-        lista, dia = dict(get_data()), datetime.strftime(datetime.today(), '%d')
-        lista = {outer_k: {inner_k: float(inner_v) for inner_k, inner_v in outer_v.items()} for outer_k, outer_v in lista.items()}
-        return jsonify(lista)
+    return jsonify(result)
 
 app.run(debug=True, port=5000)
