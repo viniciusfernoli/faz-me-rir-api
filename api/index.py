@@ -66,5 +66,4 @@ def obter_informacoes_ativo():
         lista = {outer_k: {inner_k: float(inner_v) for inner_k, inner_v in outer_v.items()} for outer_k, outer_v in lista.items()}
         return jsonify(lista)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+app.run(debug=True, port=5000)
