@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 import pandas as pd
 from flask_cors import CORS
-from fundamentus import get_data
+from fundamentuApi import get_data
 from datetime import datetime
 app = Flask(__name__)
 CORS(app)
